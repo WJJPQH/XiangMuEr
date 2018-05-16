@@ -1,0 +1,1 @@
+include ':app', ':myapplication', ':jingdong_demo', ':rk'
