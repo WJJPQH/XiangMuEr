@@ -18,19 +18,22 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InActivity extends BaseActivity<ProductPresenter> implements View.OnClickListener,ProductContract.View {
+public class InActivity extends BaseActivity<ProductPresenter> implements ProductContract.View {
 
     private XRecyclerView rvIn;
-    private int pscid=1;
+    private int pscid;
     private boolean isRefresh = true;
     private InAdapter adapter;
+    public static final int LISTACTIVITY = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initView();
+
         Intent intent = getIntent();
-        pscid = intent.getIntExtra("pscid",1);
+        pscid = intent.getIntExtra("pscid",0);
+        initView();
         mPresenter.getProduct(pscid+"");
+
     }
     @Override
     public int getContentLayout() {
@@ -49,10 +52,19 @@ public class InActivity extends BaseActivity<ProductPresenter> implements View.O
         rvIn = findViewById(R.id.rvIn);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvIn.setLayoutManager(layoutManager);
-    }
-    @Override
-    public void onClick(View view) {
+        rvIn.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
+                isRefresh = true;
+                mPresenter.getProduct(pscid+"");
+            }
 
+            @Override
+            public void onLoadMore() {
+                isRefresh = false;
+                mPresenter.getProduct(pscid+"");
+            }
+        });
     }
 
     @Override
@@ -73,30 +85,20 @@ public class InActivity extends BaseActivity<ProductPresenter> implements View.O
                 rvIn.loadMoreComplete();//设置加载更多完成
             }
         }
-        adapter.setOnListItemClickListener(new InAdapter.OnListItemClickListener() {
-            @Override
-            public void OnItemClick(ProductsBean.DataBean dataBean) {
-                Intent intent = new Intent(InActivity.this,XiangQingActivity.class);
-                intent.putExtra("pscid",pscid);
-                startActivity(intent);
-            }
-        });
+
         if (adapter == null) {
             return;
         }
-        rvIn.setLoadingListener(new XRecyclerView.LoadingListener() {
+        adapter.setOnListItemClickListener(new InAdapter.OnListItemClickListener() {
             @Override
-            public void onRefresh() {
-                isRefresh = true;
-                mPresenter.getProduct(pscid+"");
-            }
-
-            @Override
-            public void onLoadMore() {
-                isRefresh = false;
-                mPresenter.getProduct(pscid+"");
+            public void OnItemClick(ProductsBean.DataBean dataBean) {
+                Intent intent = new Intent(InActivity.this, XiangQingActivity.class);
+                intent.putExtra("bean", dataBean);
+                intent.putExtra("flag", LISTACTIVITY);
+                startActivity(intent);
             }
         });
+
     }
 
 

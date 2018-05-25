@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
@@ -28,6 +29,10 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         inflater = LayoutInflater.from(context);
     }
 
+    public void setOnItemClickListener(OnItemClickLisenter onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -37,7 +42,7 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, final int position) {
         RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
         AdBean.TuijianBean.ListBean listBean = list.get(position);
         String images = listBean.getImages();
@@ -45,7 +50,12 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         String url = split.length == 0 ? images : split[0];
         recommendViewHolder.iv.setImageURI(url);
         recommendViewHolder.tv.setText(listBean.getTitle());
-
+        recommendViewHolder.ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
     }
 
     @Override
@@ -57,11 +67,12 @@ public class RvRecommendAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         private final SimpleDraweeView iv;
         private final TextView tv;
-
+        private LinearLayout ll;
         public RecommendViewHolder(View itemView) {
             super(itemView);
             iv = itemView.findViewById(R.id.iv);
             tv = itemView.findViewById(R.id.tv);
+            ll = itemView.findViewById(R.id.ll);
         }
     }
 }

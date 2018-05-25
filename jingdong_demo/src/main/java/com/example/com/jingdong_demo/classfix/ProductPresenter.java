@@ -5,11 +5,15 @@ import com.example.com.jingdong_demo.base.BasePresenter;
 import com.example.com.jingdong_demo.bean.ProductsBean;
 import com.example.com.jingdong_demo.net.ProductApi;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class ProductPresenter extends BasePresenter<ProductContract.View> implements ProductContract.Presenter {

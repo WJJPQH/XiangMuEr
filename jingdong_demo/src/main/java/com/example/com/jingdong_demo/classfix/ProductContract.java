@@ -3,6 +3,8 @@ package com.example.com.jingdong_demo.classfix;
 import com.example.com.jingdong_demo.base.BaseContract;
 import com.example.com.jingdong_demo.bean.ProductsBean;
 
+import java.util.List;
+
 public interface ProductContract {
     interface View extends BaseContract.BaseView{
         void getProdutSuccess(ProductsBean productsBean);

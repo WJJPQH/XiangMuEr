@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 import com.example.com.jingdong_demo.R;
 import com.example.com.jingdong_demo.bean.AdBean;
 import com.example.com.jingdong_demo.inter.OnItemClickLisenter;

@@ -1,8 +1,9 @@
 package com.example.com.jingdong_demo.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AdBean {
+public class AdBean implements Serializable {
 
     /**
      * msg :
@@ -372,7 +373,7 @@ public class AdBean {
         this.data = data;
     }
 
-    public static class TuijianBean {
+    public static class TuijianBean implements Serializable {
         /**
          * list : [{"bargainPrice":11800,"createtime":"2017-10-10T17:33:37","detailUrl":"https://item.m.jd
          * .com/product/4338107.html?utm#_source=androidapp&utm#_medium=appshare&utm#_campaign=t#_335139774&utm#_term
@@ -606,7 +607,7 @@ public class AdBean {
             this.list = list;
         }
 
-        public static class ListBean {
+        public static class ListBean implements Serializable {
             /**
              * bargainPrice : 11800.0
              * createtime : 2017-10-10T17:33:37

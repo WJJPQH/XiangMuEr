@@ -19,19 +19,11 @@ import java.util.List;
 public class RvleftAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context context;
     private List<CatagoryBean.DataBean> list;
-    private List<Boolean> isClicks;
     private LayoutInflater inflater;
     private OnItemClickLisenter onItemClick;
     public RvleftAdapter(Context context, List<CatagoryBean.DataBean> list) {
         this.context = context;
         this.list = list;
-        isClicks = new ArrayList<>();
-        for(int i = 0;i<list.size();i++){
-            if(i==0){
-                isClicks.add(true);
-            }
-            isClicks.add(false);
-        }
         inflater = LayoutInflater.from(context);
     }
 
@@ -52,25 +44,24 @@ public class RvleftAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         ClassViewHoler classViewHoler = (ClassViewHoler) holder;
         CatagoryBean.DataBean dataBean = list.get(position);
         classViewHoler.text.setText(dataBean.getName());
-        if(isClicks.get(position)){
+        if (dataBean.isChecked()) {
             classViewHoler.text.setTextColor(Color.RED);
-        }else{
+            classViewHoler.text.setBackgroundColor(Color.GRAY);
+        } else {
             classViewHoler.text.setTextColor(Color.BLACK);
+            classViewHoler.text.setBackgroundColor(Color.WHITE);
         }
-        //设置点击
+
+
         classViewHoler.text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClick!=null){
-                    for(int i = 0; i <isClicks.size();i++){
-                        isClicks.set(i,false);
-                    }
-                    isClicks.set(position,true);
-                    notifyDataSetChanged();
+                if (onItemClick != null) {
                     onItemClick.onItemClick(position);
                 }
             }
         });
+
     }
 
     @Override
@@ -83,5 +74,15 @@ public class RvleftAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(itemView);
             text = itemView.findViewById(R.id.text);
         }
+    }
+    public void changeCheck(int position, boolean bool) {
+        //先还原一下
+        for (int i = 0;i<list.size();i++){
+            list.get(i).setChecked(false);
+        }
+        CatagoryBean.DataBean dataBean = list.get(position);
+        dataBean.setChecked(bool);
+        //刷新界面
+        notifyDataSetChanged();
     }
 }

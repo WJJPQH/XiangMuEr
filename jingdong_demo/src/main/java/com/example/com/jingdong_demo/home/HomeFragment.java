@@ -1,18 +1,23 @@
 package com.example.com.jingdong_demo.home;
 
+import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.example.com.jingdong_demo.R;
+import com.example.com.jingdong_demo.WebViewActivity;
 import com.example.com.jingdong_demo.adapter.RvClassAdapter;
 import com.example.com.jingdong_demo.adapter.RvRecommendAdapter;
 import com.example.com.jingdong_demo.adapter.RvSecKillAdapter;
 import com.example.com.jingdong_demo.base.BaseFragment;
 import com.example.com.jingdong_demo.bean.AdBean;
 import com.example.com.jingdong_demo.bean.CatagoryBean;
+import com.example.com.jingdong_demo.bean.ProductsBean;
+import com.example.com.jingdong_demo.classfix.XiangQingActivity;
 import com.example.com.jingdong_demo.component.DaggerHttpComponent;
+import com.example.com.jingdong_demo.inter.OnItemClickLisenter;
 import com.example.com.jingdong_demo.module.HttpModule;
 import com.example.com.jingdong_demo.utils.GlideImageLoader;
 import com.sunfusheng.marqueeview.MarqueeView;
@@ -29,6 +34,7 @@ public class HomeFragment extends BaseFragment<HomePagePresenter> implements Hom
     private RecyclerView rvSecKill;
     private RecyclerView rvRecommend;
     private ImageView ivZxing;
+    public static final int  HOMEPAGE_FRAGMENT = 0;
 
     @Override
     public int getContentLayout() {
@@ -91,7 +97,7 @@ public class HomeFragment extends BaseFragment<HomePagePresenter> implements Hom
     }
 
     @Override
-    public void getAdSuccess(AdBean adBean) {
+    public void getAdSuccess(final AdBean adBean) {
         List<AdBean.DataBean> data = adBean.getData();
         List<String> images = new ArrayList<>();
         for (int i = 0; i < data.size(); i++) {
@@ -99,15 +105,45 @@ public class HomeFragment extends BaseFragment<HomePagePresenter> implements Hom
         }
         //设置图片集合
         banner.setImages(images);
-        //banner设置方法全部调用完毕时最后调用
         banner.start();
 
 
         RvSecKillAdapter rvSecKillAdapter = new RvSecKillAdapter(getActivity(), adBean.getMiaosha().getList());
         rvSecKill.setAdapter(rvSecKillAdapter);
+        rvSecKillAdapter.setOnItemClickListener(new OnItemClickLisenter() {
+            @Override
+            public void onItemClick(int position) {
+                //跳转显示详情
+                //获取地址
+                String detailUrl = adBean.getMiaosha().getList().get(position).getDetailUrl();
+                Intent intent = new Intent(getContext(), WebViewActivity.class);
+                intent.putExtra("detailUrl", detailUrl);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongItemClick(int position) {
+
+            }
+        });
 
         RvRecommendAdapter rvRecommendAdapter = new RvRecommendAdapter(getActivity(), adBean.getTuijian().getList());
         rvRecommend.setAdapter(rvRecommendAdapter);
+        rvRecommendAdapter.setOnItemClickListener(new OnItemClickLisenter() {
+            @Override
+            public void onItemClick(int position) {
+                Intent intent = new Intent(getActivity(), XiangQingActivity.class);
+                AdBean.TuijianBean.ListBean listBean = adBean.getTuijian().getList().get(position);
+                intent.putExtra("flag",  HOMEPAGE_FRAGMENT);
+                intent.putExtra("bean", listBean);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongItemClick(int position) {
+
+            }
+        });
     }
 
     @Override
@@ -122,7 +158,6 @@ public class HomeFragment extends BaseFragment<HomePagePresenter> implements Hom
         List<CatagoryBean.DataBean> data = catagoryBean.getData();
         RvClassAdapter adapter = new RvClassAdapter(getActivity(), data);
         rvClass.setAdapter(adapter);
-
 
     }
 }

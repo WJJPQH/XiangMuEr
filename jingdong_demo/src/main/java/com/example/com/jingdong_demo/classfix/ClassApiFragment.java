@@ -22,7 +22,6 @@ public class ClassApiFragment extends BaseFragment<ClassPresenter> implements Cl
 
     private RecyclerView rvC;
     private ExpandableListView expand;
-    private int cid=1;
     @Override
     public int getContentLayout() {
         return R.layout.fragment_class;
@@ -42,7 +41,7 @@ public class ClassApiFragment extends BaseFragment<ClassPresenter> implements Cl
         rvC.setLayoutManager(layoutManager);
         expand = view.findViewById(R.id.expand);
         mPresenter.getCatagory();
-        mPresenter.getProductCatagory(cid+"");
+
     }
 
     @Override
@@ -56,6 +55,11 @@ public class ClassApiFragment extends BaseFragment<ClassPresenter> implements Cl
         }
         ElvAdapter elvAdapter = new ElvAdapter(getContext(),grouplist,childlist);
         expand.setAdapter(elvAdapter);
+        for (int i = 0; i < grouplist.size(); i++) {
+            expand.expandGroup(i);
+        }
+
+        productCatagoryBean.getMsg();
     }
 
     @Override
@@ -63,10 +67,20 @@ public class ClassApiFragment extends BaseFragment<ClassPresenter> implements Cl
         final List<CatagoryBean.DataBean> list = catagoryBean.getData();
         final RvleftAdapter rvleftAdapter = new RvleftAdapter(getContext(),list);
         rvC.setAdapter(rvleftAdapter);
+        int cid = list.get(0).getCid();
+        mPresenter.getProductCatagory(cid + "");
+
+        //设置第一个为默认选中
+        rvleftAdapter.changeCheck(0, true);
+
+        //设置点击事件
         rvleftAdapter.setOnItemClick(new OnItemClickLisenter() {
             @Override
             public void onItemClick(int position) {
-                cid = list.get(position).getCid();
+                //改变DataBean里面check的属性值
+                rvleftAdapter.changeCheck(position, true);
+                //请求右侧对应的数据
+                mPresenter.getProductCatagory(catagoryBean.getData().get(position).getCid() + "");
             }
 
             @Override
